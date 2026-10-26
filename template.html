@@ -67,7 +67,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px}
 
 <section id="visao">
   <h2>Visão geral</h2>
-  <p class="note">Leads, custo por lead e taxas consideram as campanhas de leads (formulário). O investimento total inclui também as campanhas de engajamento.</p>
+  <p class="note">Leads e custo por lead consideram as campanhas de leads (formulário). O investimento total inclui também as campanhas de engajamento.</p>
   <div class="tiles" id="tiles"></div>
 </section>
 
@@ -81,7 +81,6 @@ footer{margin-top:40px;color:var(--muted);font-size:12px}
   <div class="grid">
     <div class="card"><h3>Leads por <span class="passo">semana</span></h3><p class="note">Campanhas de leads somadas.</p><div class="box"><div class="chart" id="ch-leads"></div></div></div>
     <div class="card"><h3>Custo por lead por <span class="passo">semana</span></h3><p class="note">Investimento ÷ leads.</p><div class="box"><div class="chart" id="ch-cpl"></div></div></div>
-    <div class="card"><h3>Clique → lead por <span class="passo">semana</span></h3><p class="note">De cada 100 cliques no anúncio, quantos enviaram o formulário.</p><div class="box"><div class="chart" id="ch-conv"></div></div></div>
   </div>
 </section>
 
@@ -218,14 +217,13 @@ function render(){
   const a=agg(s.slice(0,h)),b=agg(s.slice(s.length-h));
   const take=document.getElementById('take');take.replaceChildren();
   const add=(t,bold)=>{const n=bold?document.createElement('b'):document.createTextNode(t);if(bold)n.textContent=t;take.appendChild(n);};
-  add(`${F.int(k.leads)} leads`,1);add(' no período, a ');add(F.brl(k.cpl),1);add(' por lead. Entre a primeira e a segunda metade do período, o custo por lead foi de ');add(F.brl(a.cpl),1);add(' para ');add(F.brl(b.cpl),1);add(' e a conversão de clique em lead de ');add(F.pct(a.conv),1);add(' para ');add(F.pct(b.conv),1);add('.');
-  const tiles=[['Leads',F.int(k.leads)],['Custo por lead',F.brl(k.cpl)],['Investimento total',F.brl(k.investimento)],['Cliques no link',F.int(k.cliques)],['Clique → lead',F.pct(k.conv)],['CPM',F.brl(k.cpm)]];
+  add(`${F.int(k.leads)} leads`,1);add(' no período, a ');add(F.brl(k.cpl),1);add(' por lead. Entre a primeira e a segunda metade do período, o custo por lead foi de ');add(F.brl(a.cpl),1);add(' para ');add(F.brl(b.cpl),1);add('.');
+  const tiles=[['Leads',F.int(k.leads)],['Custo por lead',F.brl(k.cpl)],['Investimento total',F.brl(k.investimento)],['CPM',F.brl(k.cpm)]];
   document.getElementById('tiles').replaceChildren(...tiles.map(([l,v])=>{const d=document.createElement('div');d.className='tile';d.innerHTML='<div class="k"></div><div class="v"></div>';d.children[0].textContent=l;d.children[1].textContent=v;return d;}));
   document.getElementById('tiles-prod').replaceChildren(...['A','C'].flatMap(p=>{const o=P.produtos[p];return [[PROD[p]+' · leads',F.int(o.leads)],[PROD[p]+' · CPL',F.brl(o.cpl)],[PROD[p]+' · investimento',F.brl(o.investimento)]];}).map(([l,v])=>{const d=document.createElement('div');d.className='tile';d.innerHTML='<div class="k"></div><div class="v"></div>';d.children[0].textContent=l;d.children[1].textContent=v;return d;}));
   const head=P.passo==='dia'?'Dia ':'Semana de ';
   series(document.getElementById('ch-leads'),s,{kind:'bar',y:'leads',fy:F.int,color:'--accent',head,tip:r=>[F.int(r.leads)+' leads',F.brl(r.investimento)+' investidos']});
   series(document.getElementById('ch-cpl'),s,{kind:'line',y:'cpl',fy:v=>'R$ '+d3.format('d')(v),color:'--accent2',head,tip:r=>['CPL '+F.brl(r.cpl)]});
-  series(document.getElementById('ch-conv'),s,{kind:'line',y:'conv',fy:v=>d3.format('.0%')(v),color:'--c3',head,tip:r=>[F.pct(r.conv)+' dos cliques viraram lead',F.int(r.cliques)+' cliques · '+F.int(r.leads)+' leads']});
   table(document.getElementById('t-camp'),P.campanhas,[{f:'nome',fmt:F.txt,w:1},{f:'tipo',fmt:F.txt},{f:'status',fmt:F.status,pill:1},{f:'investimento',fmt:F.brl,n:1,bar:1},{f:'leads',fmt:F.int,n:1},{f:'cpl',fmt:F.brl,n:1},{f:'ctr',fmt:F.pct,n:1},{f:'frequencia',fmt:F.dec,n:1}]);
   const pos=P.posicionamentos[state.prod];
   hbars(document.getElementById('ch-pos'),pos.filter(r=>r.investimento>=5).sort((x,y)=>y.leads-x.leads).slice(0,8),{label:'posicionamento',parts:[{f:'leads',c:'--accent'}],end:r=>F.int(r.leads)+' · '+F.brl(r.cpl),tip:r=>[`${F.int(r.leads)} leads (${F.pct(r.part)})`,'CPL '+F.brl(r.cpl),F.brl(r.investimento)+' investidos']});
