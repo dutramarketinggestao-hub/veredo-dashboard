@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Veredo Agro · Meta Ads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+:root{--bg:#f6f5f0;--panel:#fff;--fg:#1d2a22;--muted:#66706a;--line:#e3e1d8;--grid:#ecebe4;--accent:#2f7d4f;--accent2:#c98a1b;--c3:#3b6ea8;--muted-bar:#cfd6cf;--ok:#2f7d4f;--bad:#b4442f;--tip:#fff;--shadow:0 6px 24px rgba(20,30,25,.12)}
+@media (prefers-color-scheme:dark){:root{--bg:#121714;--panel:#1a211d;--fg:#e8ece9;--muted:#9aa59f;--line:#2b342f;--grid:#232b26;--accent:#5cbf84;--accent2:#e3a83c;--c3:#7aa7dd;--muted-bar:#38433c;--ok:#5cbf84;--bad:#e07a62;--tip:#222a25;--shadow:0 6px 24px rgba(0,0,0,.45)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 64px}
+header h1{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:clamp(26px,4vw,36px);margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin:6px 0 0}
+.take{margin:14px 0 0;max-width:62rem;font-size:15.5px}
+.take b{font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:20px 0 6px}
+.bar .lbl{font-size:12.5px;color:var(--muted)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:6px 12px;border-radius:999px}
+.seg button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+section{margin-top:34px}
+h2{font-size:17px;font-weight:600;margin:0 0 12px}
+.note{color:var(--muted);font-size:12.5px;margin:4px 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tile .k{font-size:12.5px;color:var(--muted)}
+.tile .v{font-family:Fraunces,Georgia,serif;font-size:28px;font-variant-numeric:tabular-nums;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.card h3{font-size:14.5px;font-weight:600;margin:0}
+.box{position:relative}
+.chart{min-height:220px}
+.tip{position:absolute;background:var(--tip);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:6px 10px;font-size:12px;pointer-events:none;white-space:nowrap;z-index:3}
+.tip .t{color:var(--muted)}
+svg text{font-family:Inter,system-ui,sans-serif}
+.tk{fill:var(--muted);font-size:11.5px}.gl{stroke:var(--grid)}.ax{stroke:var(--line)}.lab{fill:var(--fg);font-size:11.5px;font-variant-numeric:tabular-nums}
+.scroll{max-height:28rem;overflow:auto;margin-top:8px;max-width:100%}
+.card{overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:var(--panel);text-align:left;border-bottom:1px solid var(--line);padding:0;z-index:1}
+th button{all:unset;cursor:pointer;display:block;padding:7px 8px;color:var(--muted);font-weight:500;white-space:nowrap}
+th.n button,td.n{text-align:right}
+th[aria-sort=descending] button::after{content:" ↓"}th[aria-sort=ascending] button::after{content:" ↑"}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.nm{max-width:24rem;overflow-wrap:anywhere}
+.bc{display:flex;align-items:center;gap:6px;justify-content:flex-end}.bc i{display:inline-block;height:8px;border-radius:4px;background:var(--accent)}
+.pill{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--grid);color:var(--muted)}
+.pill.on{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+ul.notes{margin:0;padding-left:18px}ul.notes li{margin-bottom:6px}
+footer{margin-top:40px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Veredo Agro · Meta Ads</h1>
+  <p class="sub">Conta Veredo01 · <span id="per">—</span> · atualizado em <span id="upd">—</span></p>
+  <p class="take" id="take">—</p>
+  <div class="bar"><span class="lbl">Período</span><div class="seg" id="seg-per"></div></div>
+</header>
+
+<section id="visao">
+  <h2>Visão geral</h2>
+  <p class="note">Leads, custo por lead e taxas consideram as campanhas de leads (formulário). O investimento total inclui também as campanhas de engajamento.</p>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<section id="produtos">
+  <h2>Por produto</h2>
+  <div class="tiles" id="tiles-prod"></div>
+</section>
+
+<section id="evolucao">
+  <h2>Evolução no período</h2>
+  <div class="grid">
+    <div class="card"><h3>Leads por <span class="passo">semana</span></h3><p class="note">Campanhas de leads somadas.</p><div class="box"><div class="chart" id="ch-leads"></div></div></div>
+    <div class="card"><h3>Custo por lead por <span class="passo">semana</span></h3><p class="note">Investimento ÷ leads.</p><div class="box"><div class="chart" id="ch-cpl"></div></div></div>
+    <div class="card"><h3>Clique → lead por <span class="passo">semana</span></h3><p class="note">De cada 100 cliques no anúncio, quantos enviaram o formulário.</p><div class="box"><div class="chart" id="ch-conv"></div></div></div>
+  </div>
+</section>
+
+<section id="campanhas">
+  <h2>Campanhas</h2>
+  <div class="card"><div class="scroll"><table id="t-camp"><thead><tr>
+    <th data-f="nome">Campanha</th><th data-f="tipo">Tipo</th><th data-f="status">Status</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="leads">Leads</th><th class="n" data-f="cpl">CPL</th><th class="n" data-f="ctr">CTR link</th><th class="n" data-f="frequencia">Frequência</th>
+  </tr></thead><tbody></tbody></table></div></div>
+</section>
+
+<div class="bar" style="margin-top:34px"><span class="lbl">Produto (posicionamentos e público)</span><div class="seg" id="seg-prod"></div></div>
+
+<section id="posicionamentos" style="margin-top:12px">
+  <h2>Posicionamentos</h2>
+  <div class="grid">
+    <div class="card"><h3>Leads por posicionamento</h3><p class="note">Rótulo: leads · custo por lead.</p><div class="box"><div class="chart" id="ch-pos"></div></div></div>
+    <div class="card"><h3>Detalhe</h3><div class="scroll"><table id="t-pos"><thead><tr>
+      <th data-f="posicionamento">Posicionamento</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="leads">Leads</th><th class="n" data-f="part">% leads</th><th class="n" data-f="cpl">CPL</th><th class="n" data-f="ctr">CTR link</th>
+    </tr></thead><tbody></tbody></table></div></div>
+  </div>
+</section>
+
+<section id="publico">
+  <h2>Público</h2>
+  <div class="grid">
+    <div class="card"><h3>Leads por faixa etária</h3><p class="note">Barras: homens e mulheres. Rótulo: custo por lead da faixa.</p><div class="box"><div class="chart" id="ch-idade"></div></div></div>
+    <div class="card"><h3>Gênero</h3><div class="scroll"><table id="t-gen"><thead><tr>
+      <th data-f="genero">Gênero</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="leads">Leads</th><th class="n" data-f="part">% leads</th><th class="n" data-f="cpl">CPL</th>
+    </tr></thead><tbody></tbody></table></div>
+    <h3 style="margin-top:20px">Faixa etária</h3><div class="scroll"><table id="t-idade"><thead><tr>
+      <th data-f="faixa">Faixa</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="leads">Leads</th><th class="n" data-f="cpl">CPL</th><th class="n" data-f="cpl_h">CPL homens</th><th class="n" data-f="cpl_m">CPL mulheres</th>
+    </tr></thead><tbody></tbody></table></div></div>
+  </div>
+</section>
+
+<section id="estados">
+  <h2>Estados</h2>
+  <div class="card"><p class="note" style="margin-top:0">A Meta não informa leads de formulário por estado, só entrega e cliques. Aqui comparamos custo e interesse (CTR e custo por clique), considerando toda a conta.</p>
+  <div class="scroll"><table id="t-est"><thead><tr>
+    <th data-f="estado">Estado</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="part">% verba</th><th class="n" data-f="impressoes">Impressões</th><th class="n" data-f="cliques">Cliques link</th><th class="n" data-f="ctr">CTR link</th><th class="n" data-f="custo_clique">Custo/clique</th><th class="n" data-f="cpm">CPM</th>
+  </tr></thead><tbody></tbody></table></div></div>
+</section>
+
+<section id="criativos">
+  <h2>Criativos</h2>
+  <div class="card"><p class="note" style="margin-top:0">Os 12 anúncios de leads com maior investimento no período.</p>
+  <div class="scroll"><table id="t-ads"><thead><tr>
+    <th data-f="nome">Anúncio</th><th data-f="formato">Formato</th><th data-f="status">Status</th><th class="n" data-f="investimento">Investimento</th><th class="n" data-f="leads">Leads</th><th class="n" data-f="cpl">CPL</th><th class="n" data-f="ctr">CTR link</th>
+  </tr></thead><tbody></tbody></table></div></div>
+</section>
+
+<footer>Relatório preparado por Dutra Marketing de Performance · fonte: Meta Ads (conta Veredo01).</footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+const brl = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+const intf = new Intl.NumberFormat('pt-BR');
+const pctf = new Intl.NumberFormat('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
+const decf = new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const ok = v => v!=null && !Number.isNaN(+v);
+const F = {brl:v=>ok(v)?brl.format(v):'—', int:v=>ok(v)?intf.format(Math.round(v)):'—', pct:v=>ok(v)?pctf.format(v):'—', dec:v=>ok(v)?decf.format(v):'—', txt:v=>v==null?'—':String(v),
+  status:v=>({ACTIVE:'Ativo',PAUSED:'Pausado',ADSET_PAUSED:'Conjunto pausado',CAMPAIGN_PAUSED:'Campanha pausada'}[v]||v),
+  date:s=>s.split('-').reverse().slice(0,2).join('/'), datey:s=>s.split('-').reverse().join('/')};
+const PROD = {T:'Todos',A:'Laudo Agronômico',C:'Laudo Contábil'};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let state = {p:'90', prod:'T'};
+try { const s = JSON.parse(localStorage.getItem('veredo-dash')||'{}'); if (DATA.periodos[s.p]) state.p = s.p; if (PROD[s.prod]) state.prod = s.prod; } catch(e) {}
+const save = () => { try { localStorage.setItem('veredo-dash', JSON.stringify(state)); } catch(e) {} };
+
+function seg(el, opts, key){
+  el.replaceChildren(...opts.map(([v,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-pressed',String(state[key]===v));b.onclick=()=>{state[key]=v;save();render();};return b;}));
+}
+
+function table(el, rows, cols){
+  const st = el._s || (el._s = {f: el.dataset.sort || cols.find(c=>c.n)?.f, d: el.dataset.dir ? +el.dataset.dir : -1});
+  const ths=[...el.tHead.querySelectorAll('th')];
+  if(!el._i){el._i=1;ths.forEach(th=>{const b=document.createElement('button');b.type='button';b.textContent=th.textContent;th.textContent='';th.appendChild(b);b.onclick=()=>{const f=th.dataset.f;if(st.f===f)st.d*=-1;else{st.f=f;st.d=typeof (el._r[0]||{})[f]==='number'?-1:1;}table(el,el._r,cols);};});}
+  el._r=rows;
+  ths.forEach(th=>th.setAttribute('aria-sort',th.dataset.f===st.f?(st.d<0?'descending':'ascending'):'none'));
+  const s=rows.slice().sort((a,b)=>{const x=a[st.f],y=b[st.f];if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return (typeof x==='number'?x-y:String(x).localeCompare(String(y),'pt-BR'))*st.d;});
+  const mx={};cols.forEach(c=>{if(c.bar)mx[c.f]=d3.max(rows,r=>+r[c.f]||0)||1;});
+  el.tBodies[0].replaceChildren(...s.map(r=>{const tr=document.createElement('tr');cols.forEach(c=>{const td=document.createElement('td');const t=c.fmt(r[c.f]);if(c.n)td.className='n';else if(c.w)td.className='nm';
+    if(c.bar){const w=document.createElement('div');w.className='bc';const sp=document.createElement('span');sp.textContent=t;const i=document.createElement('i');i.style.width=Math.max(2,48*((+r[c.f]||0)/mx[c.f]))+'px';w.append(sp,i);td.appendChild(w);}
+    else if(c.pill){const sp=document.createElement('span');sp.className='pill'+(r[c.f]==='ACTIVE'?' on':'');sp.textContent=t;td.appendChild(sp);}
+    else td.textContent=t;tr.appendChild(td);});return tr;}));
+}
+
+function frame(el,h){el.replaceChildren();const w=Math.max(260,el.clientWidth||300);const svg=d3.select(el).append('svg').attr('width','100%').attr('viewBox',`0 0 ${w} ${h}`).attr('height',h);return {svg,w};}
+function tip(el,ev,head,lines){const box=el.parentElement;let t=box.querySelector(':scope>.tip');if(!t){t=document.createElement('div');t.className='tip';box.appendChild(t);}
+  t.replaceChildren();const h=document.createElement('div');h.className='t';h.textContent=head;t.appendChild(h);
+  lines.forEach(([c,s])=>{const d=document.createElement('div');if(c){const sw=document.createElement('span');sw.style.cssText=`display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;background:${c}`;d.appendChild(sw);}d.appendChild(document.createTextNode(s));t.appendChild(d);});
+  t.hidden=false;const [x,y]=d3.pointer(ev,box);t.style.left=Math.max(0,Math.min(box.clientWidth-t.offsetWidth,x+12))+'px';t.style.top=Math.max(0,y-t.offsetHeight-8)+'px';}
+function untip(el){const t=el.parentElement.querySelector(':scope>.tip');if(t)t.hidden=true;}
+function tw(svg,texts){const g=svg.append('g');let m=0;texts.forEach(s=>{m=Math.max(m,g.append('text').attr('class','tk').text(s).node().getComputedTextLength());});g.remove();return m;}
+
+function series(el,rows,o){
+  const H=220,{svg,w}=frame(el,H);const vals=rows.map(r=>r[o.y]).filter(v=>v!=null);
+  const y=d3.scaleLinear([0,(d3.max(vals)||1)*1.12],[H-26,10]).nice();const ticks=y.ticks(4);
+  const ml=tw(svg,ticks.map(o.fy))+10,mr=10;const labs=rows.map(r=>F.date(r.x));
+  const x=o.kind==='bar'?d3.scaleBand(labs,[ml,w-mr]).padding(.28):d3.scalePoint(labs,[ml+6,w-mr-6]);const bw=o.kind==='bar'?x.bandwidth():0;
+  ticks.forEach(t=>{svg.append('line').attr('class',t===0?'ax':'gl').attr('x1',ml).attr('x2',w-mr).attr('y1',y(t)).attr('y2',y(t));svg.append('text').attr('class','tk').attr('x',ml-6).attr('y',y(t)).attr('dy','.32em').attr('text-anchor','end').text(o.fy(t));});
+  const lw=tw(svg,['00/00'])+8,step=Math.max(1,Math.ceil(labs.length*lw/(w-ml-mr)));
+  labs.forEach((l,i)=>{if(i%step===0)svg.append('text').attr('class','tk').attr('x',x(l)+bw/2).attr('y',H-8).attr('text-anchor','middle').text(l);});
+  const col=css(o.color);
+  if(o.kind==='bar'){const b=Math.min(32,bw);svg.selectAll('rect.b').data(rows).join('rect').attr('x',r=>x(F.date(r.x))+(bw-b)/2).attr('width',b).attr('y',r=>y(r[o.y]||0)).attr('height',r=>Math.max(0,y(0)-y(r[o.y]||0))).attr('rx',4).attr('fill',col);}
+  else{const p=rows.filter(r=>r[o.y]!=null);svg.append('path').datum(p).attr('fill','none').attr('stroke',col).attr('stroke-width',2).attr('stroke-linecap','round').attr('stroke-linejoin','round').attr('d',d3.line().x(r=>x(F.date(r.x))).y(r=>y(r[o.y])));svg.selectAll('circle.p').data(p).join('circle').attr('r',3).attr('fill',col).attr('cx',r=>x(F.date(r.x))).attr('cy',r=>y(r[o.y]));}
+  const hit=o.kind==='bar'?bw/(1-.28):(labs.length>1?x.step():w);const dot=svg.append('circle').attr('r',5).attr('fill',col).style('display','none');
+  svg.selectAll('rect.h').data(rows).join('rect').attr('fill','transparent').attr('x',r=>x(F.date(r.x))+bw/2-hit/2).attr('width',hit).attr('y',0).attr('height',H-20)
+    .on('mousemove',(ev,r)=>{if(o.kind!=='bar'&&r[o.y]!=null)dot.style('display',null).attr('cx',x(F.date(r.x))).attr('cy',y(r[o.y]));tip(el,ev,o.head+F.date(r.x),o.tip(r).map(s=>[null,s]));})
+    .on('mouseleave',()=>{dot.style('display','none');untip(el);});
+}
+
+function hbars(el,rows,o){
+  const rh=30,top=o.legend?26:4,H=top+rows.length*rh+6,{svg,w}=frame(el,H);
+  const ml=tw(svg,rows.map(r=>r[o.label]))+10,mr=tw(svg,rows.map(o.end))+12;const tot=r=>d3.sum(o.parts,p=>+r[p.f]||0);
+  const x=d3.scaleLinear([0,d3.max(rows,tot)||1],[ml,Math.max(ml+20,w-mr)]);const cols=o.parts.map(p=>css(p.c));
+  if(o.legend){let lx=ml;o.parts.forEach((p,i)=>{svg.append('rect').attr('x',lx).attr('y',6).attr('width',10).attr('height',10).attr('rx',2).attr('fill',cols[i]);const t=svg.append('text').attr('class','tk').attr('x',lx+14).attr('y',11).attr('dy','.32em').text(p.name);lx+=14+t.node().getComputedTextLength()+16;});}
+  rows.forEach((r,i)=>{const cy=top+i*rh+rh/2;svg.append('text').attr('class','tk').attr('x',ml-8).attr('y',cy).attr('dy','.32em').attr('text-anchor','end').text(r[o.label]);let x0=ml;
+    o.parts.forEach((p,j)=>{const wd=x(+r[p.f]||0)-ml;if(wd>0)svg.append('rect').attr('x',x0).attr('y',cy-9).attr('width',wd).attr('height',18).attr('rx',o.parts.length>1?2:4).attr('fill',cols[j]);x0+=wd;});
+    svg.append('text').attr('class','lab').attr('x',x0+6).attr('y',cy).attr('dy','.32em').text(o.end(r));
+    svg.append('rect').attr('fill','transparent').attr('x',0).attr('width',w).attr('y',cy-rh/2).attr('height',rh).on('mousemove',ev=>tip(el,ev,r[o.label],o.tip(r).map((s,k)=>[o.parts.length>1?cols[k]:null,s]))).on('mouseleave',()=>untip(el));});
+}
+
+function render(){
+  const P=DATA.periodos[state.p];
+  seg(document.getElementById('seg-per'),Object.keys(DATA.periodos).map(k=>[k,k+' dias']),'p');
+  seg(document.getElementById('seg-prod'),Object.entries(PROD),'prod');
+  document.getElementById('per').textContent=`últimos ${state.p} dias (${F.datey(P.de)} a ${F.datey(P.ate)})`;
+  document.getElementById('upd').textContent=F.datey(DATA.atualizado);
+  document.querySelectorAll('.passo').forEach(s=>s.textContent=P.passo);
+  const k=P.kpi, s=P.serie, h=Math.floor(s.length/2);
+  const agg=rs=>{const i=d3.sum(rs,r=>r.investimento),l=d3.sum(rs,r=>r.leads),c=d3.sum(rs,r=>r.cliques);return {cpl:l?i/l:null,conv:c?l/c:null};};
+  const a=agg(s.slice(0,h)),b=agg(s.slice(s.length-h));
+  const take=document.getElementById('take');take.replaceChildren();
+  const add=(t,bold)=>{const n=bold?document.createElement('b'):document.createTextNode(t);if(bold)n.textContent=t;take.appendChild(n);};
+  add(`${F.int(k.leads)} leads`,1);add(' no período, a ');add(F.brl(k.cpl),1);add(' por lead. Entre a primeira e a segunda metade do período, o custo por lead foi de ');add(F.brl(a.cpl),1);add(' para ');add(F.brl(b.cpl),1);add(' e a conversão de clique em lead de ');add(F.pct(a.conv),1);add(' para ');add(F.pct(b.conv),1);add('.');
+  const tiles=[['Leads',F.int(k.leads)],['Custo por lead',F.brl(k.cpl)],['Investimento total',F.brl(k.investimento)],['Cliques no link',F.int(k.cliques)],['Clique → lead',F.pct(k.conv)],['CPM',F.brl(k.cpm)]];
+  document.getElementById('tiles').replaceChildren(...tiles.map(([l,v])=>{const d=document.createElement('div');d.className='tile';d.innerHTML='<div class="k"></div><div class="v"></div>';d.children[0].textContent=l;d.children[1].textContent=v;return d;}));
+  document.getElementById('tiles-prod').replaceChildren(...['A','C'].flatMap(p=>{const o=P.produtos[p];return [[PROD[p]+' · leads',F.int(o.leads)],[PROD[p]+' · CPL',F.brl(o.cpl)],[PROD[p]+' · investimento',F.brl(o.investimento)]];}).map(([l,v])=>{const d=document.createElement('div');d.className='tile';d.innerHTML='<div class="k"></div><div class="v"></div>';d.children[0].textContent=l;d.children[1].textContent=v;return d;}));
+  const head=P.passo==='dia'?'Dia ':'Semana de ';
+  series(document.getElementById('ch-leads'),s,{kind:'bar',y:'leads',fy:F.int,color:'--accent',head,tip:r=>[F.int(r.leads)+' leads',F.brl(r.investimento)+' investidos']});
+  series(document.getElementById('ch-cpl'),s,{kind:'line',y:'cpl',fy:v=>'R$ '+d3.format('d')(v),color:'--accent2',head,tip:r=>['CPL '+F.brl(r.cpl)]});
+  series(document.getElementById('ch-conv'),s,{kind:'line',y:'conv',fy:v=>d3.format('.0%')(v),color:'--c3',head,tip:r=>[F.pct(r.conv)+' dos cliques viraram lead',F.int(r.cliques)+' cliques · '+F.int(r.leads)+' leads']});
+  table(document.getElementById('t-camp'),P.campanhas,[{f:'nome',fmt:F.txt,w:1},{f:'tipo',fmt:F.txt},{f:'status',fmt:F.status,pill:1},{f:'investimento',fmt:F.brl,n:1,bar:1},{f:'leads',fmt:F.int,n:1},{f:'cpl',fmt:F.brl,n:1},{f:'ctr',fmt:F.pct,n:1},{f:'frequencia',fmt:F.dec,n:1}]);
+  const pos=P.posicionamentos[state.prod];
+  hbars(document.getElementById('ch-pos'),pos.filter(r=>r.investimento>=5).sort((x,y)=>y.leads-x.leads).slice(0,8),{label:'posicionamento',parts:[{f:'leads',c:'--accent'}],end:r=>F.int(r.leads)+' · '+F.brl(r.cpl),tip:r=>[`${F.int(r.leads)} leads (${F.pct(r.part)})`,'CPL '+F.brl(r.cpl),F.brl(r.investimento)+' investidos']});
+  table(document.getElementById('t-pos'),pos,[{f:'posicionamento',fmt:F.txt},{f:'investimento',fmt:F.brl,n:1},{f:'leads',fmt:F.int,n:1,bar:1},{f:'part',fmt:F.pct,n:1},{f:'cpl',fmt:F.brl,n:1},{f:'ctr',fmt:F.pct,n:1}]);
+  const ida=P.idade[state.prod];
+  hbars(document.getElementById('ch-idade'),ida,{label:'faixa',legend:1,parts:[{f:'leads_h',c:'--accent',name:'Homens'},{f:'leads_m',c:'--accent2',name:'Mulheres'}],end:r=>F.brl(r.cpl),tip:r=>[`Homens: ${F.int(r.leads_h)} leads · CPL ${F.brl(r.cpl_h)}`,`Mulheres: ${F.int(r.leads_m)} leads · CPL ${F.brl(r.cpl_m)}`]});
+  const ti=document.getElementById('t-idade');ti.dataset.sort='faixa';ti.dataset.dir='1';
+  table(ti,ida,[{f:'faixa',fmt:F.txt},{f:'investimento',fmt:F.brl,n:1},{f:'leads',fmt:F.int,n:1},{f:'cpl',fmt:F.brl,n:1},{f:'cpl_h',fmt:F.brl,n:1},{f:'cpl_m',fmt:F.brl,n:1}]);
+  table(document.getElementById('t-gen'),P.genero[state.prod],[{f:'genero',fmt:F.txt},{f:'investimento',fmt:F.brl,n:1},{f:'leads',fmt:F.int,n:1},{f:'part',fmt:F.pct,n:1},{f:'cpl',fmt:F.brl,n:1}]);
+  table(document.getElementById('t-est'),P.estados,[{f:'estado',fmt:F.txt},{f:'investimento',fmt:F.brl,n:1,bar:1},{f:'part',fmt:F.pct,n:1},{f:'impressoes',fmt:F.int,n:1},{f:'cliques',fmt:F.int,n:1},{f:'ctr',fmt:F.pct,n:1},{f:'custo_clique',fmt:F.brl,n:1},{f:'cpm',fmt:F.brl,n:1}]);
+  table(document.getElementById('t-ads'),P.anuncios,[{f:'nome',fmt:F.txt,w:1},{f:'formato',fmt:F.txt},{f:'status',fmt:F.status,pill:1},{f:'investimento',fmt:F.brl,n:1,bar:1},{f:'leads',fmt:F.int,n:1},{f:'cpl',fmt:F.brl,n:1},{f:'ctr',fmt:F.pct,n:1}]);
+}
+render();
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(render,150);});
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',render);
+</script>
+</body>
+</html>
